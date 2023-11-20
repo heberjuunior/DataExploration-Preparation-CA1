@@ -141,6 +141,9 @@ ggplot(filtered_data, aes(x = OFFENDER_RACE, y = TOTAL_INDIVIDUAL_VICTIMS, fill 
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   theme(plot.title = element_text(hjust = 0.5))
 
+# Graphics and descriptive understanding should be provided along with Data Exploratory analysis
+# (EDA). Identify subgroups of features that can explore some interesting facts.
+
 # Groups and summarizes the data to get the top 10 offenses
 top_offenses <- cleaned_data %>%
   group_by(OFFENSE_NAME) %>%
@@ -188,3 +191,15 @@ ggplot(filtered_data, aes(x = STATE_NAME, fill = BIAS_DESC)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme(legend.position = "right")
+
+# Apply dummy encoding to categorical variables (at least one variable used from the data set) and
+# discuss the benefits of dummy encoding to understand the categorical data.
+
+# Applies encoding to the bias column
+encoded_data <- model.matrix(~ BIAS_DESC - 1, data = cleaned_data)
+
+# Renames the columns
+colnames(encoded_data) <- gsub("BIAS_DESC", "", colnames(encoded_data))
+
+# Prints the first few rows
+View(encoded_data)
