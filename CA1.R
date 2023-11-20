@@ -82,3 +82,35 @@ library(visdat)
 
 # Checks for missing values in the data set
 vis_dat(cleaned_data)
+
+# Selects the numerical column
+numerical_data <- cleaned_data %>% select(TOTAL_OFFENDER_COUNT)
+
+# Applies min-max normalization
+min_max_normalize <- function(x) {
+  (x - min(x)) / (max(x) - min(x))
+}
+
+# Applies z-score standardization
+z_score_standardize <- function(x) {
+  (x - mean(x)) / sd(x)
+}
+
+# Applies robust scaling
+robust_scale <- function(x) {
+  (x - median(x)) / IQR(x)
+}
+
+# Applies scaling to selected column
+scaled_data <- cleaned_data %>%
+  mutate(
+    MIN_MAX_NORMALIZED = min_max_normalize(TOTAL_OFFENDER_COUNT),
+    Z_SCORE_STANDARDIZED = z_score_standardize(TOTAL_OFFENDER_COUNT),
+    ROBUST_SCALED = robust_scale(TOTAL_OFFENDER_COUNT)
+  )
+
+# Creates table with results
+result_table <- select(scaled_data, TOTAL_OFFENDER_COUNT, MIN_MAX_NORMALIZED, Z_SCORE_STANDARDIZED, ROBUST_SCALED)
+
+# Prints the table
+View(result_table)
