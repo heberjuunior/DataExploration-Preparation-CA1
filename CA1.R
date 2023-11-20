@@ -140,3 +140,23 @@ ggplot(filtered_data, aes(x = OFFENDER_RACE, y = TOTAL_INDIVIDUAL_VICTIMS, fill 
        y = "TOTAL_INDIVIDUAL_VICTIMS") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   theme(plot.title = element_text(hjust = 0.5))
+
+# Groups and summarizes the data to get the top 10 offenses
+top_offenses <- cleaned_data %>%
+  group_by(OFFENSE_NAME) %>%
+  summarize(Count = n()) %>%
+  arrange(desc(Count)) %>%
+  head(10)
+
+# Prints the top 10 offences
+View(top_offenses)
+
+# Groups and summarizes the data to get the top 20 locations and victims
+top_locations <- cleaned_data %>%
+  group_by(LOCATION_NAME) %>%
+  summarize(Total_Victims = sum(TOTAL_INDIVIDUAL_VICTIMS)) %>%
+  arrange(desc(Total_Victims)) %>%
+  head(20)
+
+# Print the top 20 locations and victims
+View(top_locations)
