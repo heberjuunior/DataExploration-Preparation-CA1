@@ -19,3 +19,33 @@ cleaned_data <- crimes %>%
 
 # Prints the head of the cleaned_data data set
 head(cleaned_data)
+
+# Calculates summary statistics for numerical variables
+summary_stats <- sapply(cleaned_data, function(x) {
+  if (is.numeric(x) && !all(is.na(x))) {
+    stats <- c(
+      Mean = mean(x, na.rm = TRUE),
+      Median = median(x, na.rm = TRUE),
+      Min = min(x, na.rm = TRUE),
+      Max = max(x, na.rm = TRUE)
+    )
+    return(stats)
+  } else {
+    return(rep(NA, 5))
+  }
+})
+
+# Creates a vector with mean, standard deviation, minimum, and maximum values
+summary_stats <- c(mean = 10, sd = 2, min = 5, max = 15)
+
+# Assigns the column "names" to the vector
+names(summary_stats) <- c("Mean", "SD", "Min", "Max")
+
+# Defines the column names for the data frame
+col_names <- c("Mean", "SD", "Min", "Max")
+
+# Converts the vector to a data frame with column names
+summary_stats_df <- as.data.frame(summary_stats, col.names = col_names)
+
+# Prints structure of the vector
+str(summary_stats)
