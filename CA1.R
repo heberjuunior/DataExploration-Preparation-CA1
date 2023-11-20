@@ -35,17 +35,18 @@ summary_stats <- sapply(cleaned_data, function(x) {
   }
 })
 
-# Creates a vector with mean, standard deviation, minimum, and maximum values
-summary_stats <- c(mean = 10, sd = 2, min = 5, max = 15)
+# Creates a vector with mean, median, min, max, and standard deviation values
+summary_stats <- c(Mean = 10, Median = 9, Min = 5, Max = 15, Std_Dev = 2)
 
-# Assigns the column "names" to the vector
-names(summary_stats) <- c("Mean", "SD", "Min", "Max")
+# Creates a data frame from the vector
+summary_stats_df <- data.frame(Statistic = names(summary_stats), Value = as.numeric(summary_stats), row.names = NULL)
 
-# Defines the column names for the data frame
-col_names <- c("Mean", "SD", "Min", "Max")
+# Filters columns with NA values
+summary_stats_df <- summary_stats_df[, !apply(summary_stats_df, 2, function(x) all(is.na(x)))]
 
-# Converts the vector to a data frame with column names
-summary_stats_df <- as.data.frame(summary_stats, col.names = col_names)
+# Adds row labels for each operation
+row_labels <- c("Mean", "Median", "Min", "Max", "Std_Dev")
+rownames(summary_stats_df) <- row_labels
 
-# Prints structure of the vector
-str(summary_stats)
+# Displays the summary statistics
+View(summary_stats_df)
