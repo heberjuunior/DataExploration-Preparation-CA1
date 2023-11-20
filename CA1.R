@@ -20,6 +20,9 @@ cleaned_data <- crimes %>%
 # Prints the head of the cleaned_data data set
 head(cleaned_data)
 
+# Calculate the statistical parameters (mean, median, minimum, maximum, and standard deviation)
+# for each of the numerical variables.
+
 # Calculates summary statistics for numerical variables
 summary_stats <- sapply(cleaned_data, function(x) {
   if (is.numeric(x) && !all(is.na(x))) {
@@ -50,6 +53,9 @@ rownames(summary_stats_df) <- row_labels
 
 # Displays the summary statistics
 View(summary_stats_df)
+
+# Identify which variables are categorical, discrete and continuous in the chosen data set and show
+# using some visualization or plot. Explore whether there are missing values for any of the variables.
 
 # Identifies categorical, discrete, and continuous variables
 categorical_vars <- sapply(cleaned_data, is.factor)
@@ -83,6 +89,9 @@ library(visdat)
 # Checks for missing values in the data set
 vis_dat(cleaned_data)
 
+# Apply Min-Max Normalization, Z-score Standardization and Robust scalar on the numerical data
+# variables.
+
 # Selects the numerical column
 numerical_data <- cleaned_data %>% select(TOTAL_OFFENDER_COUNT)
 
@@ -114,3 +123,20 @@ result_table <- select(scaled_data, TOTAL_OFFENDER_COUNT, MIN_MAX_NORMALIZED, Z_
 
 # Prints the table
 View(result_table)
+
+# Line, Scatter and Heatmaps can be used to show the correlation between the features of the
+# dataset.
+
+# Filters rows with "unknown"
+filtered_data <- cleaned_data %>%
+  filter(OFFENDER_RACE != "Unknown")
+
+# Creates heatmap
+ggplot(filtered_data, aes(x = OFFENDER_RACE, y = TOTAL_INDIVIDUAL_VICTIMS, fill = TOTAL_INDIVIDUAL_VICTIMS)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "blue") +
+  labs(title = "Correlation between TOTAL_INDIVIDUAL_VICTIMS and OFFENDER_RACE",
+       x = "OFFENDER_RACE",
+       y = "TOTAL_INDIVIDUAL_VICTIMS") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5))
