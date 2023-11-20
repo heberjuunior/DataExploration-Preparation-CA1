@@ -151,12 +151,40 @@ top_offenses <- cleaned_data %>%
 # Prints the top 10 offences
 View(top_offenses)
 
-# Groups and summarizes the data to get the top 20 locations and victims
+# Groups and summarizes the data to get the top 10 locations and victims
 top_locations <- cleaned_data %>%
   group_by(LOCATION_NAME) %>%
   summarize(Total_Victims = sum(TOTAL_INDIVIDUAL_VICTIMS)) %>%
   arrange(desc(Total_Victims)) %>%
-  head(20)
+  head(10)
 
-# Print the top 20 locations and victims
+# Print the top 10 locations and victims
 View(top_locations)
+
+# Groups and summarizes the data to get the top 10 states
+top_state_name <- cleaned_data %>%
+  group_by(STATE_NAME) %>%
+  summarize(Count = n()) %>%
+  arrange(desc(Count)) %>%
+  head(10)
+
+# Groups and summarizes the data to get the top 10 bias
+top_bias_desc <- cleaned_data %>%
+  group_by(BIAS_DESC) %>%
+  summarize(Count = n()) %>%
+  arrange(desc(Count)) %>%
+  head(10)
+
+# Filters the data to include only the top 10 categories
+filtered_data <- cleaned_data %>%
+  filter(STATE_NAME %in% top_state_name$STATE_NAME, BIAS_DESC %in% top_bias_desc$BIAS_DESC)
+
+# Creates bar chart
+ggplot(filtered_data, aes(x = STATE_NAME, fill = BIAS_DESC)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Correlation between Top 10 STATE_NAME and Top 10 BIAS_DESC",
+       x = "STATE_NAME",
+       y = "Count") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position = "right")
