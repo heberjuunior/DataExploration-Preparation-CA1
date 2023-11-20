@@ -50,3 +50,35 @@ rownames(summary_stats_df) <- row_labels
 
 # Displays the summary statistics
 View(summary_stats_df)
+
+# Identifies categorical, discrete, and continuous variables
+categorical_vars <- sapply(cleaned_data, is.factor)
+discrete_vars <- sapply(cleaned_data, function(x) is.integer(x) || is.numeric(x))
+continuous_vars <- sapply(cleaned_data, is.numeric)
+
+# Visualizes categorical variables
+cat_vars <- names(cleaned_data)[categorical_vars]
+cat_plots <- lapply(cat_vars, function(var) {
+  ggplot(cleaned_data, aes(x = .data[[var]])) +
+    geom_bar() +
+    labs(title = paste("Bar Plot of", var)) +
+    theme_minimal()
+})
+
+# Visualizes discrete and continuous variables
+num_vars <- names(cleaned_data)[discrete_vars | continuous_vars]
+num_plots <- lapply(num_vars, function(var) {
+  ggplot(cleaned_data, aes(x = .data[[var]])) +
+    geom_histogram(binwidth = 1, fill = "purple", color = "black") +
+    labs(title = paste("Histogram of", var)) +
+    theme_minimal()
+})
+
+# Installs visdat
+install.packages("visdat")
+
+# Loads visdat
+library(visdat)
+
+# Checks for missing values in the data set
+vis_dat(cleaned_data)
