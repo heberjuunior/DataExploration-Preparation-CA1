@@ -190,7 +190,7 @@ ggplot(filtered_data, aes(x = STATE_NAME, fill = BIAS_DESC)) +
        y = "Count") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   theme(plot.title = element_text(hjust = 0.5)) +
-  theme(legend.position = "right")
+  theme(legend.position = "right") 
 
 # Apply dummy encoding to categorical variables (at least one variable used from the data set) and
 # discuss the benefits of dummy encoding to understand the categorical data.
@@ -203,3 +203,35 @@ colnames(encoded_data) <- gsub("BIAS_DESC", "", colnames(encoded_data))
 
 # Prints the first few rows
 View(encoded_data)
+                        
+# Apply PCA with your chosen number of components. Write up a short profile of the first few
+# components extracted based on your understanding.
+
+# Selects numeric variables
+numeric_data <- cleaned_data %>%
+  select_if(is.numeric)
+
+# Scales the numeric data
+scaled_numeric_data <- scale(numeric_data)
+
+# Applies PCA
+pca_result <- prcomp(scaled_numeric_data, center = TRUE, scale. = TRUE)
+
+# Explores PCA results
+summary(pca_result)
+
+# Creates scree plot
+scree_plot <- ggplot() +
+  geom_bar(stat = "identity", aes(x = 1:length(pca_result$sdev), y = pca_result$sdev^2 / sum(pca_result$sdev^2)), fill = "purple") +
+  labs(title = "Scree Plot",
+       x = "Principal Component",
+       y = "Proportion of Variance Explained") +
+  theme_minimal()
+
+print(scree_plot)
+
+# Creates biplot
+biplot(pca_result)
+
+# Prints the profile
+print(profile)
