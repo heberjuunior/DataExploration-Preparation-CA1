@@ -7,7 +7,7 @@ library(ggplot2)
 library(gridExtra)
 
 # Reads the data set file and assigns it to the "crime" variable
-crimes <- read.table("hate_crime.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
+crimes <- read.table("crimes.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
 
 # Defines the columns to be kept
 columns_to_keep <- c("INCIDENT_DATE", "OFFENSE_NAME", "PUB_AGENCY_NAME", "STATE_NAME", "LOCATION_NAME", "OFFENDER_RACE", "TOTAL_OFFENDER_COUNT", "TOTAL_INDIVIDUAL_VICTIMS", "BIAS_DESC", "MULTIPLE_OFFENSE")
@@ -17,8 +17,97 @@ cleaned_data <- crimes %>%
   select(all_of(columns_to_keep)) %>%
   slice_sample(n = 10000, replace = FALSE)
 
+
 # Prints the head of the cleaned_data data set
 head(cleaned_data)
+
+# Assume 'cleaned_data' is the data frame with the relevant variables for PCA
+# For demonstration, I'll include only numeric variables in PCA
+
+# Select numeric variables for PCA
+numeric_data <- cleaned_data %>%
+  select_if(is.numeric)
+
+# Scale the numeric data
+scaled_numeric_data <- scale(numeric_data)
+
+# Apply PCA
+pca_result <- prcomp(scaled_numeric_data[1:100, ], center = TRUE, scale. = TRUE)
+
+
+# Explore PCA results
+summary(pca_result)
+
+# Create a scree plot to visualize the proportion of variance explained
+scree_plot <- ggplot() +
+  geom_bar(stat = "identity", aes(x = 1:length(pca_result$sdev), y = pca_result$sdev^2 / sum(pca_result$sdev^2)), fill = "steelblue") +
+  labs(title = "PCA Scree Plot",
+       x = "Principal Component",
+       y = "Proportion of Variance") +
+  theme_minimal()
+
+print(scree_plot)
+
+# Create a biplot to visualize loadings
+biplot(pca_result)
+
+
+# Calculate the statistical parameters (mean, median, minimum, maximum, and standard deviation)
+# for each of the numerical variables.
+
+# Installs libraries
+install.packages(c("dplyr", "ggplot2", "gridExtra"))
+
+# Loads libraries
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+
+# Reads the data set file and assigns it to the "crime" variable
+crimes <- read.table("crimes.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
+
+# Defines the columns to be kept
+columns_to_keep <- c("INCIDENT_DATE", "OFFENSE_NAME", "PUB_AGENCY_NAME", "STATE_NAME", "LOCATION_NAME", "OFFENDER_RACE", "TOTAL_OFFENDER_COUNT", "TOTAL_INDIVIDUAL_VICTIMS", "BIAS_DESC", "MULTIPLE_OFFENSE")
+
+# Filters and creates the cleaned_data data set
+cleaned_data <- crimes %>%
+  select(all_of(columns_to_keep)) %>%
+  slice_sample(n = 10000, replace = FALSE)
+
+
+# Prints the head of the cleaned_data data set
+head(cleaned_data)
+
+# Assume 'cleaned_data' is the data frame with the relevant variables for PCA
+# For demonstration, I'll include only numeric variables in PCA
+
+# Select numeric variables for PCA
+numeric_data <- cleaned_data %>%
+  select_if(is.numeric)
+
+# Scale the numeric data
+scaled_numeric_data <- scale(numeric_data)
+
+# Apply PCA
+pca_result <- prcomp(scaled_numeric_data[1:100, ], center = TRUE, scale. = TRUE)
+
+
+# Explore PCA results
+summary(pca_result)
+
+# Create a scree plot to visualize the proportion of variance explained
+scree_plot <- ggplot() +
+  geom_bar(stat = "identity", aes(x = 1:length(pca_result$sdev), y = pca_result$sdev^2 / sum(pca_result$sdev^2)), fill = "steelblue") +
+  labs(title = "PCA Scree Plot",
+       x = "Principal Component",
+       y = "Proportion of Variance") +
+  theme_minimal()
+
+print(scree_plot)
+
+# Create a biplot to visualize loadings
+biplot(pca_result)
+
 
 # Calculate the statistical parameters (mean, median, minimum, maximum, and standard deviation)
 # for each of the numerical variables.
@@ -134,7 +223,7 @@ filtered_data <- cleaned_data %>%
 # Creates heatmap
 ggplot(filtered_data, aes(x = OFFENDER_RACE, y = TOTAL_INDIVIDUAL_VICTIMS, fill = TOTAL_INDIVIDUAL_VICTIMS)) +
   geom_tile() +
-  scale_fill_gradient(low = "white", high = "blue") +
+  scale_fill_gradient(low = "white", high = "red") +
   labs(title = "Correlation between TOTAL_INDIVIDUAL_VICTIMS and OFFENDER_RACE",
        x = "OFFENDER_RACE",
        y = "TOTAL_INDIVIDUAL_VICTIMS") +
@@ -171,6 +260,9 @@ top_state_name <- cleaned_data %>%
   arrange(desc(Count)) %>%
   head(10)
 
+# Print the top 10 states
+View(top_state_name)
+
 # Groups and summarizes the data to get the top 10 bias
 top_bias_desc <- cleaned_data %>%
   group_by(BIAS_DESC) %>%
@@ -178,9 +270,13 @@ top_bias_desc <- cleaned_data %>%
   arrange(desc(Count)) %>%
   head(10)
 
+# Print the top 10 bias
+View(top_bias_desc)
+
 # Filters the data to include only the top 10 categories
 filtered_data <- cleaned_data %>%
   filter(STATE_NAME %in% top_state_name$STATE_NAME, BIAS_DESC %in% top_bias_desc$BIAS_DESC)
+
 
 # Creates bar chart
 ggplot(filtered_data, aes(x = STATE_NAME, fill = BIAS_DESC)) +
