@@ -331,3 +331,19 @@ biplot(pca_result)
 
 # Prints the profile
 print(profile)
+
+# What is the purpose of dimensionality reduction? Explore the situations where you can gain the
+# benefit of dimensionality reduction for data analysis.
+
+# Applies PCA
+pca_result <- prcomp(scaled_numeric_data, center = TRUE, scale. = TRUE)
+
+# Chooses the number of components
+num_components <- 2
+
+# Extract the first principal components
+reduced_data <- as.data.frame(pca_result$x[, 1:num_components])
+
+# Prints the reduced data
+head(reduced_data)
+
