@@ -347,3 +347,24 @@ reduced_data <- as.data.frame(pca_result$x[, 1:num_components])
 # Prints the reduced data
 head(reduced_data)
 
+
+# Describe the contribution of each team member in the project clearly and use a bar chart or pie 
+# chart to represent the effort and time spent during this project.
+
+# Data
+team_data <- data.frame(
+  TeamMember = c("Caroline", "Heber"),
+  Contribution = c(45, 55)
+)
+
+# Bar Chart
+bar_chart <- ggplot(team_data, aes(x = TeamMember, y = Contribution, fill = TeamMember)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Team Member Contributions",
+       x = "Team Member",
+       y = "Contribution (%)") +
+  theme_minimal()
+
+# Prints the chart
+print(bar_chart)
+
